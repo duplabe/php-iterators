@@ -6,37 +6,104 @@ Gondoltam készítek egy részletes, de korántsem teljes leírást a PHP iterá
 
 Az iterátorokkal kapcsolatos interface-ek és osztályok az SPL (Standard PHP Library) **csomgban** találhatóak.
 
-## Interface ##
-
-### Iterator ###
+## Iterator ##
 
 A PHP-s iterator-ok az [Iterator](http://hu.php.net/manual/en/class.iterator.php "Iterator") interface-en alapulnak, azt implementálják. Sok érdekesség nincs benne, a szokásos iterátorokkal kapcsolatos metódusokat szedi össze: current(), key(), next(), rewind(), valid().
 
 Könyvtár szerkezet a rekurzív iterátorok bemutatására:
 
 <pre>
-|-pelda/b
-| \-pelda/b/b.txt
-|-pelda/c
-\-pelda/a
-  |-pelda/a/e
-  | \-pelda/a/e/e.txt
-  |-pelda/a/a.txt
-  \-pelda/a/d
+|-example/b
+| \-example/b/b.txt
+|-example/c
+\-example/a
+  |-example/a/e
+  | \-example/a/e/e.txt
+  |-example/a/a.txt
+  \-example/a/d
 </pre>
 
-### DirectoryIterator ###
+## ArrayIterator ([ArrayIterator](http://hu.php.net/manual/en/class.arrayiterator.php))##
 
-Egy könyvtár elemein mehetünk végig vele
+Tömbökön és objektumokon iterálhatunk végig.
 
-### RecursiveDirectoryIterator ###
+<pre>
+class Example
+{
+    public $a;
+    protected $b;
+    private $_c;
+
+    public function __construct($a, $b, $c)
+    {
+        $this->a = $a;
+        $this->b = $b;
+        $this->_c = $c;
+    }
+}
+
+echo 'Iterate over an object', PHP_EOL;
+
+$iterator = new ArrayIterator(new Example(1, 2, 3));
+
+foreach ($iterator as $item)
+{
+    echo $item, PHP_EOL;
+}
+
+echo 'Iterate over an array', PHP_EOL;
+
+$iterator = new ArrayIterator(array(1,2,3));
+
+foreach ($iterator as $item)
+{
+    echo $item, PHP_EOL;
+}
+</pre>
+
+Kimenet:
+
+<pre>
+Iterate over an object
+1
+Iterate over an array
+1
+2
+3
+</pre>
+
+## DirectoryIterator ([DirectoryIterator](http://hu.php.net/manual/en/class.directoryiterator.php)) ##
+
+Egy könyvtár elemein mehetünk végig vele. Az elemek [SplFileInfo](http://hu.php.net/manual/en/class.splfileinfo.php) objektumok.
+
+Példa:
+
+<pre>
+$iterator = new DirectoryIterator('example');
+
+foreach ($iterator as $value) {
+    echo $value->getFilename(), PHP_EOL;
+}
+</pre>
+
+Kimenet:
+
+<pre>
+b
+..
+c
+.
+a
+</pre>
+
+## RecursiveDirectoryIterator ([RecursiveDirectoryIterator](http://hu.php.net/manual/en/class.recursivedirectoryiterator.php))##
 
 A DirectoryIterator-hoz hasonlóan itt is egy könyvtár elemein mehetünk végig, de rekurzívan.
 
 Péda:
 <pre>
 $directoryIterator = new RecursiveDirectoryIterator(
-    'pelda',
+    'example',
     RecursiveDirectoryIterator::SKIP_DOTS
 );
 $treeIterator = new RecursiveTreeIterator(
@@ -50,23 +117,23 @@ foreach ($treeIterator as $key => $node) {
 Kimenet:
 
 <pre>
-|-pelda/b
-| \-pelda/b/b.txt
-|-pelda/c
-\-pelda/a
-  |-pelda/a/e
-  | \-pelda/a/e/e.txt
-  |-pelda/a/a.txt
-  \-pelda/a/d
+|-example/b
+| \-example/b/b.txt
+|-example/c
+\-example/a
+  |-example/a/e
+  | \-example/a/e/e.txt
+  |-example/a/a.txt
+  \-example/a/d
 </pre>
 
-### ParentIterator ###
+## ParentIterator ##
 
 Segítségével RecursiveIterator-okból lehet kiszűrni azon elemeket, amelyeknek nincs gyermekük. A RecursiveDirectoryIterator példához visszanyúlva, listázzuk ki csak a könyvtárakat:
 
 <pre>
 $directoryIterator = new RecursiveDirectoryIterator(
-    'pelda',
+    'example',
     RecursiveDirectoryIterator::SKIP_DOTS
 );
 $treeIterator = new RecursiveTreeIterator(
@@ -79,15 +146,19 @@ foreach ($treeIterator as $node) {
 
 Kimenet:
 
+Az üres könyvtárakat azért mutatja, mert ugye minden könyvtárban van egy hivatkozás önmagára (.) és a szülő könyvtárra (..), tehát van gyerekük.
+
 <pre>
-|-pelda/b
-|-pelda/c
-\-pelda/a
-  |-pelda/a/e
-  \-pelda/a/d
+|-example/b
+|-example/c
+\-example/a
+  |-example/a/e
+  \-example/a/d
 </pre>
 
-#### MultipleIterator ####
+## AppendIterator ##
+
+## MultipleIterator ##
 
 Az AppendIterator-hoz hasonlóan itt is több iterator-on mehetünk végig, de kicsit másképpen. Minden belső iterator-ból kivesz egy elemet, majd egy tömbben összegyűjtve adja vissza iterációnként. 
 
@@ -123,20 +194,23 @@ foreach ($miterator as $item) {
 Kimenet:
 
 <pre>
-array (
-  'foo' => '1',
-  'bar' => '5',
-  'baz' => '8',
+Array
+(
+    [foo] => 1
+    [bar] => 5
+    [baz] => 8
 )
-array (
-  'foo' => '2',
-  'bar' => '6',
-  'baz' => '9',
+Array
+(
+    [foo] => 2
+    [bar] => 6
+    [baz] => 9
 )
-array (
-  'foo' => '3',
-  'bar' => '7',
-  'baz' => '10',
+Array
+(
+    [foo] => 3
+    [bar] => 7
+    [baz] => 10
 )
 </pre>
 
@@ -162,28 +236,32 @@ foreach ($miterator as $item) {
 Kimenet:
 
 <pre>
-array (
-  0 => '1',
-  1 => '5',
-  2 => '8',
+Array
+(
+    [0] => 1
+    [1] => 5
+    [2] => 8
 )
-array (
-  0 => '2',
-  1 => '6',
-  2 => '9',
+Array
+(
+    [0] => 2
+    [1] => 6
+    [2] => 9
 )
-array (
-  0 => '3',
-  1 => '7',
-  2 => '10',
+Array
+(
+    [0] => 3
+    [1] => 7
+    [2] => 10
 )
-array (
-  0 => '4',
-  1 => NULL,
-  2 => '11',
+Array
+(
+    [0] => 4
+    [1] =>
+    [2] => 11
 )
 </pre>
 
-NoRewindIterator
+## NoRewindIterator ##
 
 Iterator, amit nem lehet rewind-olni, azaz, ha egyszer végigmentünk az összes elemen, nem lehet újra kezdeni az iterálást.
