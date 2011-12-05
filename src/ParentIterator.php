@@ -1,7 +1,7 @@
 <?php
 
 $directoryIterator = new RecursiveDirectoryIterator(
-    'pelda',
+    'example',
     RecursiveDirectoryIterator::SKIP_DOTS
 );
 $treeIterator = new RecursiveTreeIterator(
