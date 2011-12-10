@@ -1,4 +1,4 @@
-﻿# PHP Iterátorok #
+# PHP Iterátorok #
 
 Gondoltam készítek egy részletes, de korántsem teljes leírást a PHP iterátorairól.
 
@@ -23,9 +23,13 @@ Könyvtár szerkezet a rekurzív iterátorok bemutatására:
   \-example/a/d
 </pre>
 
-## ArrayIterator ([ArrayIterator](http://hu.php.net/manual/en/class.arrayiterator.php))##
+## ArrayIterator ##
+
+[ArrayIterator](http://hu.php.net/manual/en/class.arrayiterator.php)
 
 Tömbökön és objektumokon iterálhatunk végig.
+
+Példa:
 
 <pre>
 class Example
@@ -72,7 +76,9 @@ Iterate over an array
 3
 </pre>
 
-## DirectoryIterator ([DirectoryIterator](http://hu.php.net/manual/en/class.directoryiterator.php)) ##
+## DirectoryIterator ##
+
+[DirectoryIterator](http://hu.php.net/manual/en/class.directoryiterator.php)
 
 Egy könyvtár elemein mehetünk végig vele. Az elemek [SplFileInfo](http://hu.php.net/manual/en/class.splfileinfo.php) objektumok.
 
@@ -96,7 +102,9 @@ c
 a
 </pre>
 
-## RecursiveDirectoryIterator ([RecursiveDirectoryIterator](http://hu.php.net/manual/en/class.recursivedirectoryiterator.php))##
+## RecursiveDirectoryIterator ##
+
+[RecursiveDirectoryIterator](http://hu.php.net/manual/en/class.recursivedirectoryiterator.php)
 
 A DirectoryIterator-hoz hasonlóan itt is egy könyvtár elemein mehetünk végig, de rekurzívan.
 
@@ -129,6 +137,8 @@ Kimenet:
 
 ## ParentIterator ##
 
+([ParenntIterator](http://www.php.net/manual/en/class.parentiterator.php))
+
 Segítségével RecursiveIterator-okból lehet kiszűrni azon elemeket, amelyeknek nincs gyermekük. A RecursiveDirectoryIterator példához visszanyúlva, listázzuk ki csak a könyvtárakat:
 
 <pre>
@@ -158,14 +168,80 @@ Az üres könyvtárakat azért mutatja, mert ugye minden könyvtárban van egy h
 
 ## AppendIterator ##
 
+[AppendIterator](http://www.php.net/manual/en/class.appenditerator.php)
+
+Több belső iteratort tárol, és azokon megy végig, egymás után.
+
+A getArrayIterator() egy ArrayIterator-ban visszaadja az összes belső iteratort.
+
+Példa:
+
+<pre>
+$iterator1 = new ArrayIterator(range(0, 3));
+$iterator2 = new ArrayIterator(range(4, 6));
+
+$appendIterator = new AppendIterator();
+$appendIterator->append($iterator1);
+$appendIterator->append($iterator2);
+
+foreach ($appendIterator as $key => $value) {
+    echo $key, ' => ', print_r($value, true), PHP_EOL;
+}
+
+echo PHP_EOL, 'getArrayIterator()', PHP_EOL, PHP_EOL;
+
+foreach ($appendIterator->getArrayIterator() as $key => $value) {
+    echo $key, ' => ', print_r($value, true), PHP_EOL;
+}
+</pre>
+
+Kimenet:
+
+<pre>
+0 => 0
+1 => 1
+2 => 2
+3 => 3
+0 => 4
+1 => 5
+2 => 6
+
+getArrayIterator()
+
+0 => ArrayIterator Object
+(
+    [storage:ArrayIterator:private] => Array
+        (
+            [0] => 0
+            [1] => 1
+            [2] => 2
+            [3] => 3
+        )
+
+)
+
+1 => ArrayIterator Object
+(
+    [storage:ArrayIterator:private] => Array
+        (
+            [0] => 4
+            [1] => 5
+            [2] => 6
+        )
+
+)
+</pre>
+
 ## MultipleIterator ##
+
+[MultipleIterator](http://www.php.net/manual/en/class.multipleiterator.php)
 
 Az AppendIterator-hoz hasonlóan itt is több iterator-on mehetünk végig, de kicsit másképpen. Minden belső iterator-ból kivesz egy elemet, majd egy tömbben összegyűjtve adja vissza iterációnként. 
 
 Flag-ek:
 
 * MultipleIterator::MIT\_KEYS_NUMERIC: a tömb numerikusan indexelt
-* MultipleIterator::MIT_KEYS_ASSOC: a tömb asszociatív. A kulcsok az iterator-ok hozzáadásánál adhatóak meg (attachIterator).
+* MultipleIterator::MIT\_KEYS_ASSOC: a tömb asszociatív. A kulcsok az iterator-ok hozzáadásánál adhatóak meg (attachIterator).
 
 A belső iterator-ok elemszáma különböző lehet, ezért két flag-gel állíthatjuk be, hogy mi történjen akkor, ha valamelyikből elfogynak az elemek:
 
@@ -264,4 +340,51 @@ Array
 
 ## NoRewindIterator ##
 
+[NoRewindIterator](http://www.php.net/manual/en/class.norewinditerator.php)
+
 Iterator, amit nem lehet rewind-olni, azaz, ha egyszer végigmentünk az összes elemen, nem lehet újra kezdeni az iterálást.
+
+## FilterIterator ##
+
+[FilterIterator](http://www.php.net/manual/en/class.filteriterator.php)
+
+A FilterIterator egy belső iterátor elemiből tud szűrni. A FilterIterator egy abstract osztály, amelyben egy darab abstract metódus van, az accept(). Az accept() visszatérési értéke boolean:
+
+* true esetén az iterator elfogadja az elemet
+* false esetén eldobja
+
+Példa:
+
+<pre>
+class OddFilterIterator extends FilterIterator
+{
+
+    public function accept()
+    {
+        $current = $this->current();
+
+        return is_integer($current) && $current % 2;
+    }
+
+}
+
+$iterator = new AppendIterator();
+$iterator->append(new ArrayIterator(range(0, 10)));
+$iterator->append(new ArrayIterator(array('a', 'b')));
+
+$filterIterator = new OddFilterIterator($iterator);
+
+foreach ($filterIterator as $item) {
+    echo $item, PHP_EOL;
+}
+</pre>
+
+Kimenet:
+
+<pre>
+1
+3
+5
+7
+9
+</pre>
