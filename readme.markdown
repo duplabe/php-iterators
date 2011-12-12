@@ -1,12 +1,12 @@
-# PHP Iterátorok #
+# PHP Iterátorok
 
 Gondoltam készítek egy részletes, de korántsem teljes leírást a PHP iterátorairól.
 
-## SPL ##
+## SPL
 
 Az iterátorokkal kapcsolatos interface-ek és osztályok az SPL (Standard PHP Library) **csomgban** találhatóak.
 
-## Iterator ##
+## Iterator
 
 A PHP-s iterator-ok az [Iterator](http://hu.php.net/manual/en/class.iterator.php "Iterator") interface-en alapulnak, azt implementálják. Sok érdekesség nincs benne, a szokásos iterátorokkal kapcsolatos metódusokat szedi össze: current(), key(), next(), rewind(), valid().
 
@@ -23,7 +23,13 @@ Könyvtár szerkezet a rekurzív iterátorok bemutatására:
   \-example/a/d
 </pre>
 
-## ArrayIterator ##
+## EmptyIterator
+
+[EmptyIterator](http://php.net/emptyiterator)
+
+Üres iterator.
+
+## ArrayIterator
 
 [ArrayIterator](http://hu.php.net/manual/en/class.arrayiterator.php)
 
@@ -76,7 +82,7 @@ Iterate over an array
 3
 </pre>
 
-## DirectoryIterator ##
+## DirectoryIterator
 
 [DirectoryIterator](http://hu.php.net/manual/en/class.directoryiterator.php)
 
@@ -102,7 +108,23 @@ c
 a
 </pre>
 
-## RecursiveDirectoryIterator ##
+## FilesystemIterator
+
+[FilesystemIterator](http://php.net/manual/en/class.filesystemiterator.php)
+
+Hasonló a DirectoryIterator-hoz, abból öröklődik. A constructor alap esetben az alábbi flag-eket kapja:
+
+* KEY\_AS_PATHNAME
+* CURRENT\_AS_FILEINFO
+* SKIP_DOTS
+
+## GlobIterator
+
+[GlobIterator](http://php.net/manual/en/globiterator.construct.php)
+
+A [glob()](http://php.net/manual/en/function.glob.php) függvényhez hasonló funkcionalitással rendelkező iterator.
+
+## RecursiveDirectoryIterator
 
 [RecursiveDirectoryIterator](http://hu.php.net/manual/en/class.recursivedirectoryiterator.php)
 
@@ -135,9 +157,9 @@ Kimenet:
   \-example/a/d
 </pre>
 
-## ParentIterator ##
+## ParentIterator
 
-([ParenntIterator](http://www.php.net/manual/en/class.parentiterator.php))
+[ParenntIterator](http://www.php.net/manual/en/class.parentiterator.php)
 
 Segítségével RecursiveIterator-okból lehet kiszűrni azon elemeket, amelyeknek nincs gyermekük. A RecursiveDirectoryIterator példához visszanyúlva, listázzuk ki csak a könyvtárakat:
 
@@ -166,7 +188,7 @@ Az üres könyvtárakat azért mutatja, mert ugye minden könyvtárban van egy h
   \-example/a/d
 </pre>
 
-## AppendIterator ##
+## AppendIterator
 
 [AppendIterator](http://www.php.net/manual/en/class.appenditerator.php)
 
@@ -232,11 +254,11 @@ getArrayIterator()
 )
 </pre>
 
-## MultipleIterator ##
+## MultipleIterator
 
 [MultipleIterator](http://www.php.net/manual/en/class.multipleiterator.php)
 
-Az AppendIterator-hoz hasonlóan itt is több iterator-on mehetünk végig, de kicsit másképpen. Minden belső iterator-ból kivesz egy elemet, majd egy tömbben összegyűjtve adja vissza iterációnként. 
+Az AppendIterator-hoz hasonlóan itt is több iterator-on mehetünk végig, de kicsit másképpen. Minden belső iterator-ból kivesz egy elemet, majd egy tömbben összegyűjtve adja vissza iterációnként.
 
 Flag-ek:
 
@@ -338,13 +360,13 @@ Array
 )
 </pre>
 
-## NoRewindIterator ##
+## NoRewindIterator
 
 [NoRewindIterator](http://www.php.net/manual/en/class.norewinditerator.php)
 
 Iterator, amit nem lehet rewind-olni, azaz, ha egyszer végigmentünk az összes elemen, nem lehet újra kezdeni az iterálást.
 
-## FilterIterator ##
+## FilterIterator
 
 [FilterIterator](http://www.php.net/manual/en/class.filteriterator.php)
 
