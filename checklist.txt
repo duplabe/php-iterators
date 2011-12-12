@@ -3,10 +3,10 @@
 CachingIterator
 CallbackFilterIterator
 + DirectoryIterator
-EmptyIterator
-FilesystemIterator
++ EmptyIterator
++ FilesystemIterator
 + FilterIterator
-GlobIterator
++ GlobIterator
 InfiniteIterator
 IteratorIterator
 LimitIterator
