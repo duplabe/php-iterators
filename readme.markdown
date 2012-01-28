@@ -4,24 +4,11 @@ Gondoltam készítek egy részletes, de korántsem teljes leírást a PHP iterá
 
 ## SPL
 
-Az iterátorokkal kapcsolatos interface-ek és osztályok az SPL (Standard PHP Library) **csomgban** találhatóak.
+Az iterátorokkal kapcsolatos interface-ek és osztályok az SPL (Standard PHP Library) **csomagban** találhatóak.
 
 ## Iterator
 
 A PHP-s iterator-ok az [Iterator](http://hu.php.net/manual/en/class.iterator.php "Iterator") interface-en alapulnak, azt implementálják. Sok érdekesség nincs benne, a szokásos iterátorokkal kapcsolatos metódusokat szedi össze: current(), key(), next(), rewind(), valid().
-
-Könyvtár szerkezet a rekurzív iterátorok bemutatására:
-
-<pre>
-|-example/b
-| \-example/b/b.txt
-|-example/c
-\-example/a
-  |-example/a/e
-  | \-example/a/e/e.txt
-  |-example/a/a.txt
-  \-example/a/d
-</pre>
 
 ## EmptyIterator
 
@@ -88,6 +75,19 @@ Iterate over an array
 
 Egy könyvtár elemein mehetünk végig vele. Az elemek [SplFileInfo](http://hu.php.net/manual/en/class.splfileinfo.php) objektumok.
 
+Könyvtár szerkezet a iterátorok bemutatására:
+
+<pre>
+|-example/b
+| \-example/b/b.txt
+|-example/c
+\-example/a
+  |-example/a/e
+  | \-example/a/e/e.txt
+  |-example/a/a.txt
+  \-example/a/d
+</pre>
+
 Példa:
 
 <pre>
@@ -117,6 +117,20 @@ Hasonló a DirectoryIterator-hoz, abból öröklődik. A constructor alap esetbe
 * KEY\_AS_PATHNAME
 * CURRENT\_AS_FILEINFO
 * SKIP_DOTS
+
+További flag-ek:
+
+* CURRENT\_AS_PATHNAME: a current() az aktuális file elérésével tér vissza
+* CURRENT\_AS_FILEINFO: a current() egy SplFileInfo objektummal tér vissza
+* CURRENT\_AS_SELF: a current() az iterator-ral ($this) tér vissza
+* CURRENT\_MODE_MASK: ?
+* KEY\_AS_PATHNAME: a key() az aktuális file elérésével tér vissza
+* KEY\_AS_FILENAME: a key() az aktuális file nevével tér vissza
+* FOLLOW\_SYMLINKS: a hasChildren() követi a linkeket
+* KEY\_MODE_MASK: ?
+* NEW\_CURRENT_AND_KEY: ugyanaz mint a FilesystemIterator::KEY\_AS_FILENAME | FilesystemIterator::CURRENT\_AS_FILEINFO
+* SKIP\_DOTS: átugorja a .-ot és a ..-ot
+* UNIX\_PATHS: az elérési utakban /-t használ, a PHP-t futtató OS-től függetlenül (pl Windows-on)
 
 ## GlobIterator
 
