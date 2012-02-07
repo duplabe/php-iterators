@@ -380,6 +380,12 @@ Array
 
 Iterator, amit nem lehet rewind-olni, azaz, ha egyszer végigmentünk az összes elemen, nem lehet újra kezdeni az iterálást.
 
+## InfiniteIterator
+
+[InfiniteIterator](http://www.php.net/InfiniteIterator)
+
+Olyan iterátor, amellyel a végtelenségig iterálhatunk az elemeken, nem kell a rewind-ot meghívnunk.
+
 ## FilterIterator
 
 [FilterIterator](http://www.php.net/manual/en/class.filteriterator.php)
