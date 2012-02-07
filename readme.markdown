@@ -392,6 +392,33 @@ Iterator, amit nem lehet rewind-olni, azaz, ha egyszer végigmentünk az összes
 
 Olyan iterátor, amellyel a végtelenségig iterálhatunk az elemeken, nem kell a rewind-ot meghívnunk.
 
+## LimitIterator
+
+[LimitIterator](http://www.php.net/manual/en/class.limititerator.php)
+
+Egy iterátor elemeinek részhalmazán mehetünk végig. A konstruktorában egy iterátoron kivül megadhatunk egy offset és egy count paramétert is.
+
+Példa:
+<pre>
+$limitIterator = new LimitIterator(
+    new ArrayIterator(range(0, 10)),
+    5,
+    3
+);
+
+foreach ($limitIterator as $item) {
+    echo $item, PHP_EOL;
+}
+</pre>
+
+Kimenet:
+
+<pre>
+5
+6
+7
+</pre>
+
 ## FilterIterator
 
 [FilterIterator](http://www.php.net/manual/en/class.filteriterator.php)
