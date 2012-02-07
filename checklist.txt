@@ -7,9 +7,9 @@ CallbackFilterIterator
 + FilesystemIterator
 + FilterIterator
 + GlobIterator
-InfiniteIterator
-IteratorIterator
-LimitIterator
++ InfiniteIterator
++ IteratorIterator
++ LimitIterator
 + MultipleIterator
 + NoRewindIterator
 + ParentIterator

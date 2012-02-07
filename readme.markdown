@@ -4,17 +4,17 @@ Gondoltam készítek egy részletes, de korántsem teljes leírást a PHP iterá
 
 ## SPL
 
-Az iterátorokkal kapcsolatos interface-ek és osztályok az SPL (Standard PHP Library) **csomagban** találhatóak.
+Az iterátorokkal kapcsolatos interfészek és osztályok az SPL (Standard PHP Library) csomagban találhatóak.
 
 ## Iterator
 
-A PHP-s iterator-ok az [Iterator](http://php.net/manual/en/class.iterator.php "Iterator") interface-en alapulnak, azt implementálják. Sok érdekesség nincs benne, a szokásos iterátorokkal kapcsolatos metódusokat szedi össze: current(), key(), next(), rewind(), valid().
+A PHP-s iterátorok az [Iterator](http://php.net/manual/en/class.iterator.php) interfészen alapulnak, azt implementálják. Sok érdekesség nincs benne, a szokásos iterátorokkal kapcsolatos metódusokat szedi össze: current, key, next, rewind, valid.
 
 ## EmptyIterator
 
 [EmptyIterator](http://php.net/emptyiterator)
 
-Üres iterator.
+Üres iterátor.
 
 ## ArrayIterator
 
@@ -69,137 +69,94 @@ Iterate over an array
 3
 </pre>
 
-## DirectoryIterator
+## IteratorIterator
 
-[DirectoryIterator](http://php.net/manual/en/class.directoryiterator.php)
+[IteratorIterator](http://php.net/manual/en/class.iteratoriterator.php)
 
-Egy könyvtár elemein mehetünk végig vele. Az elemek [SplFileInfo](http://php.net/manual/en/class.splfileinfo.php) objektumok.
+A [Traversable] interfészt implementáló objektumokból iterátort csinál.
 
-Könyvtár szerkezet a iterátorok bemutatására:
+## NoRewindIterator
+
+[NoRewindIterator](http://php.net/manual/en/class.norewinditerator.php)
+
+Iterator, amit nem lehet rewindolni, azaz, ha egyszer végigmentünk az összes elemen, nem lehet újra kezdeni az iterálást.
+
+## InfiniteIterator
+
+[InfiniteIterator](http://php.net/InfiniteIterator)
+
+Olyan iterátor, amellyel a végtelenségig iterálhatunk az elemeken, nem kell a rewindot meghívnunk.
+
+## LimitIterator
+
+[LimitIterator](http://php.net/manual/en/class.limititerator.php)
+
+Egy iterátor elemeinek részhalmazán mehetünk végig. A konstruktorában egy iterátoron kivül megadhatunk egy offset és egy count paramétert is.
+
+Példa:
+<pre>
+$limitIterator = new LimitIterator(
+    new ArrayIterator(range(0, 10)),
+    5,
+    3
+);
+
+foreach ($limitIterator as $item) {
+    echo $item, PHP_EOL;
+}
+</pre>
+
+Kimenet:
 
 <pre>
-|-example/b
-| \-example/b/b.txt
-|-example/c
-\-example/a
-  |-example/a/e
-  | \-example/a/e/e.txt
-  |-example/a/a.txt
-  \-example/a/d
+5
+6
+7
 </pre>
+
+## FilterIterator
+
+[FilterIterator](http://php.net/manual/en/class.filteriterator.php)
+
+A FilterIterator egy belső iterátor elemiből tud szűrni. A FilterIterator egy abstract osztály, amelyben egy darab abstract metódus van, az accept(). Az accept() visszatérési értéke boolean:
+
+* true esetén az iterator elfogadja az elemet
+* false esetén eldobja
 
 Példa:
 
 <pre>
-$iterator = new DirectoryIterator('example');
+class OddFilterIterator extends FilterIterator
+{
 
-foreach ($iterator as $value) {
-    echo $value->getFilename(), PHP_EOL;
+    public function accept()
+    {
+        $current = $this->current();
+
+        return is_integer($current) && $current % 2;
+    }
+
+}
+
+$iterator = new AppendIterator();
+$iterator->append(new ArrayIterator(range(0, 10)));
+$iterator->append(new ArrayIterator(array('a', 'b')));
+
+$filterIterator = new OddFilterIterator($iterator);
+
+foreach ($filterIterator as $item) {
+    echo $item, PHP_EOL;
 }
 </pre>
 
 Kimenet:
 
 <pre>
-b
-..
-c
-.
-a
-</pre>
-
-## FilesystemIterator
-
-[FilesystemIterator](http://php.net/manual/en/class.filesystemiterator.php)
-
-Hasonló a DirectoryIterator-hoz, abból öröklődik. A constructor alap esetben az alábbi flag-eket kapja:
-
-* KEY\_AS_PATHNAME
-* CURRENT\_AS_FILEINFO
-* SKIP_DOTS
-
-További flag-ek:
-
-* CURRENT\_AS_PATHNAME: a current() az aktuális file elérésével tér vissza
-* CURRENT\_AS_FILEINFO: a current() egy SplFileInfo objektummal tér vissza
-* CURRENT\_AS_SELF: a current() az iterator-ral ($this) tér vissza
-* CURRENT\_MODE_MASK: ?
-* KEY\_AS_PATHNAME: a key() az aktuális file elérésével tér vissza
-* KEY\_AS_FILENAME: a key() az aktuális file nevével tér vissza
-* FOLLOW\_SYMLINKS: a hasChildren() követi a linkeket
-* KEY\_MODE_MASK: ?
-* NEW\_CURRENT_AND_KEY: ugyanaz mint a FilesystemIterator::KEY\_AS_FILENAME | FilesystemIterator::CURRENT\_AS_FILEINFO
-* SKIP\_DOTS: átugorja a .-ot és a ..-ot
-* UNIX\_PATHS: az elérési utakban /-t használ, a PHP-t futtató OS-től függetlenül (pl Windows-on)
-
-## GlobIterator
-
-[GlobIterator](http://php.net/manual/en/globiterator.construct.php)
-
-A [glob()](http://php.net/manual/en/function.glob.php) függvényhez hasonló funkcionalitással rendelkező iterator.
-
-## RecursiveDirectoryIterator
-
-[RecursiveDirectoryIterator](http://php.net/manual/en/class.recursivedirectoryiterator.php)
-
-A DirectoryIterator-hoz hasonlóan itt is egy könyvtár elemein mehetünk végig, de rekurzívan.
-
-Péda:
-<pre>
-$directoryIterator = new RecursiveDirectoryIterator(
-    'example',
-    RecursiveDirectoryIterator::SKIP_DOTS
-);
-$treeIterator = new RecursiveTreeIterator(
-    $directoryIterator
-);
-foreach ($treeIterator as $key => $node) {
-    echo $node, PHP_EOL;
-}
-</pre>
-
-Kimenet:
-
-<pre>
-|-example/b
-| \-example/b/b.txt
-|-example/c
-\-example/a
-  |-example/a/e
-  | \-example/a/e/e.txt
-  |-example/a/a.txt
-  \-example/a/d
-</pre>
-
-## ParentIterator
-
-[ParenntIterator](http://php.net/manual/en/class.parentiterator.php)
-
-Segítségével RecursiveIterator-okból lehet kiszűrni azon elemeket, amelyeknek nincs gyermekük. A RecursiveDirectoryIterator példához visszanyúlva, listázzuk ki csak a könyvtárakat:
-
-<pre>
-$directoryIterator = new RecursiveDirectoryIterator(
-    'example',
-    RecursiveDirectoryIterator::SKIP_DOTS
-);
-$treeIterator = new RecursiveTreeIterator(
-	new ParentIterator($directoryIterator)
-);
-foreach ($treeIterator as $node) {
-    echo $node . PHP_EOL;
-};
-</pre>
-
-Kimenet:
-
-Az üres könyvtárakat azért mutatja, mert ugye minden könyvtárban van egy hivatkozás önmagára (.) és a szülő könyvtárra (..), tehát van gyerekük.
-
-<pre>
-|-example/b
-|-example/c
-\-example/a
-  |-example/a/e
-  \-example/a/d
+1
+3
+5
+7
+9
 </pre>
 
 ## AppendIterator
@@ -272,17 +229,17 @@ getArrayIterator()
 
 [MultipleIterator](http://php.net/manual/en/class.multipleiterator.php)
 
-Az AppendIterator-hoz hasonlóan itt is több iterator-on mehetünk végig, de kicsit másképpen. Minden belső iterator-ból kivesz egy elemet, majd egy tömbben összegyűjtve adja vissza iterációnként.
+Az AppendIterator-hoz hasonlóan itt is több iterátoron mehetünk végig, de kicsit másképpen. Minden belső iterátorból kivesz egy elemet, majd egy tömbben összegyűjtve adja vissza iterációnként.
 
-Flag-ek:
+Flagek:
 
 * MultipleIterator::MIT\_KEYS_NUMERIC: a tömb numerikusan indexelt
-* MultipleIterator::MIT\_KEYS_ASSOC: a tömb asszociatív. A kulcsok az iterator-ok hozzáadásánál adhatóak meg (attachIterator).
+* MultipleIterator::MIT\_KEYS_ASSOC: a tömb asszociatív. A kulcsok az iterátorok hozzáadásánál adhatóak meg (attachIterator).
 
-A belső iterator-ok elemszáma különböző lehet, ezért két flag-gel állíthatjuk be, hogy mi történjen akkor, ha valamelyikből elfogynak az elemek:
+A belső iterátorok elemszáma különböző lehet, ezért két flaggel állíthatjuk be, hogy mi történjen akkor, ha valamelyikből elfogynak az elemek:
 
 * MultipleIterator::MIT\_NEED_ANY: annyi elemet ad vissza, amennyit tud, a hiányzó elemeket null-okkal tölti fel.
-* MultipleIterator::MIT\_NEED_ALL: ha valamelyik iterator-ból elfogynak az elemek, a MultipleIterator leáll
+* MultipleIterator::MIT\_NEED_ALL: ha valamelyik iterátorból elfogynak az elemek, a MultipleIterator leáll.
 
 Példa:
 
@@ -374,11 +331,74 @@ Array
 )
 </pre>
 
-## IteratorIterator
 
-[IteratorIterator](http://php.net/manual/en/class.iteratoriterator.php)
 
-A [Traversable] interfészt implementáló objektumokból iterátort csinál.
+## DirectoryIterator
+
+[DirectoryIterator](http://php.net/manual/en/class.directoryiterator.php)
+
+Egy könyvtár elemein mehetünk végig vele. Az elemek [SplFileInfo](http://php.net/manual/en/class.splfileinfo.php) objektumok.
+
+Könyvtár szerkezet az iterátorok bemutatására:
+
+<pre>
+|-example/b
+| \-example/b/b.txt
+|-example/c
+\-example/a
+  |-example/a/e
+  | \-example/a/e/e.txt
+  |-example/a/a.txt
+  \-example/a/d
+</pre>
+
+Példa:
+
+<pre>
+$iterator = new DirectoryIterator('example');
+
+foreach ($iterator as $value) {
+    echo $value->getFilename(), PHP_EOL;
+}
+</pre>
+
+Kimenet:
+
+<pre>
+b
+..
+c
+.
+a
+</pre>
+
+## FilesystemIterator
+
+[FilesystemIterator](http://php.net/manual/en/class.filesystemiterator.php)
+
+Hasonló a DirectoryIterator-hoz, abból öröklődik. A konstructor alap esetben az alábbi flageket kapja:
+
+* KEY\_AS_PATHNAME
+* CURRENT\_AS_FILEINFO
+* SKIP_DOTS
+
+További flagek:
+
+* CURRENT\_AS_PATHNAME: a current() az aktuális file elérésével tér vissza
+* CURRENT\_AS_FILEINFO: a current() egy SplFileInfo objektummal tér vissza
+* CURRENT\_AS_SELF: a current() az iterator-ral ($this) tér vissza
+* KEY\_AS_PATHNAME: a key() az aktuális file elérésével tér vissza
+* KEY\_AS_FILENAME: a key() az aktuális file nevével tér vissza
+* FOLLOW\_SYMLINKS: a hasChildren() követi a linkeket
+* NEW\_CURRENT_AND_KEY: ugyanaz mint a FilesystemIterator::KEY\_AS_FILENAME | FilesystemIterator::CURRENT\_AS_FILEINFO
+* SKIP\_DOTS: átugorja a .-ot és a ..-ot
+* UNIX\_PATHS: az elérési utakban /-t használ, a PHP-t futtató OS-től függetlenül (pl Windows-on is)
+
+## GlobIterator
+
+[GlobIterator](http://php.net/manual/en/globiterator.construct.php)
+
+A [glob()](http://php.net/manual/en/function.glob.php) függvényhez hasonló funkcionalitással rendelkező iterátor.
 
 ## RecursiveIteratorIterator
 
@@ -392,86 +412,82 @@ Három módon használható:
 * RecursiveIteratorIterator::SELF\_FIRST - Minden elemen végig megy, a szülőkkel kezd.
 * RecursiveIteratorIterator::CHILD\_FIRST: Minden elemen végig megy, a levelekkel kezd.
 
-## NoRewindIterator
+## ParentIterator
 
-[NoRewindIterator](http://php.net/manual/en/class.norewinditerator.php)
+[ParentIterator](http://php.net/manual/en/class.parentiterator.php)
 
-Iterator, amit nem lehet rewind-olni, azaz, ha egyszer végigmentünk az összes elemen, nem lehet újra kezdeni az iterálást.
+Segítségével RecursiveIterator-okból lehet kiszűrni azon elemeket, amelyeknek nincs gyermekük. A RecursiveDirectoryIterator példához visszanyúlva, listázzuk ki csak a könyvtárakat:
 
-## InfiniteIterator
-
-[InfiniteIterator](http://php.net/InfiniteIterator)
-
-Olyan iterátor, amellyel a végtelenségig iterálhatunk az elemeken, nem kell a rewind-ot meghívnunk.
-
-## LimitIterator
-
-[LimitIterator](http://php.net/manual/en/class.limititerator.php)
-
-Egy iterátor elemeinek részhalmazán mehetünk végig. A konstruktorában egy iterátoron kivül megadhatunk egy offset és egy count paramétert is.
-
-Példa:
 <pre>
-$limitIterator = new LimitIterator(
-    new ArrayIterator(range(0, 10)),
-    5,
-    3
+$directoryIterator = new RecursiveDirectoryIterator(
+    'example',
+    RecursiveDirectoryIterator::SKIP_DOTS
 );
+$treeIterator = new RecursiveTreeIterator(
+	new ParentIterator($directoryIterator)
+);
+foreach ($treeIterator as $node) {
+    echo $node . PHP_EOL;
+};
+</pre>
 
-foreach ($limitIterator as $item) {
-    echo $item, PHP_EOL;
+Kimenet:
+
+Az üres könyvtárakat azért mutatja, mert ugye minden könyvtárban van egy hivatkozás önmagára (.) és a szülő könyvtárra (..), tehát van gyerekük.
+
+<pre>
+|-example/b
+|-example/c
+\-example/a
+  |-example/a/e
+  \-example/a/d
+</pre>
+
+
+## RecursiveDirectoryIterator
+
+[RecursiveDirectoryIterator](http://php.net/manual/en/class.recursivedirectoryiterator.php)
+
+A DirectoryIterator-hoz hasonlóan itt is egy könyvtár elemein mehetünk végig, de rekurzívan.
+
+Péda:
+<pre>
+$directoryIterator = new RecursiveDirectoryIterator(
+    'example',
+    RecursiveDirectoryIterator::SKIP_DOTS
+);
+$treeIterator = new RecursiveTreeIterator(
+    $directoryIterator
+);
+foreach ($treeIterator as $key => $node) {
+    echo $node, PHP_EOL;
 }
 </pre>
 
 Kimenet:
 
 <pre>
-5
-6
-7
+|-example/b
+| \-example/b/b.txt
+|-example/c
+\-example/a
+  |-example/a/e
+  | \-example/a/e/e.txt
+  |-example/a/a.txt
+  \-example/a/d
 </pre>
 
-## FilterIterator
+## Rekurzív iterátorok
 
-[FilterIterator](http://php.net/manual/en/class.filteriterator.php)
+Szinte az összes (itt nem is említett) iterátornak van rekurzív párja:
 
-A FilterIterator egy belső iterátor elemiből tud szűrni. A FilterIterator egy abstract osztály, amelyben egy darab abstract metódus van, az accept(). Az accept() visszatérési értéke boolean:
+* RecursiveArrayIterator
+* RecursiveCachingIterator
+* RecursiveCallbackFilterIterator
+* RecursiveFilterIterator
+* RecursiveRegexIterator
+* RecursiveTreeIterator
 
-* true esetén az iterator elfogadja az elemet
-* false esetén eldobja
+A cikknek példákkal együtt van saját repoja: [php-iterators](https://github.com/duplabe/php-iterators)
 
-Példa:
-
-<pre>
-class OddFilterIterator extends FilterIterator
-{
-
-    public function accept()
-    {
-        $current = $this->current();
-
-        return is_integer($current) && $current % 2;
-    }
-
-}
-
-$iterator = new AppendIterator();
-$iterator->append(new ArrayIterator(range(0, 10)));
-$iterator->append(new ArrayIterator(array('a', 'b')));
-
-$filterIterator = new OddFilterIterator($iterator);
-
-foreach ($filterIterator as $item) {
-    echo $item, PHP_EOL;
-}
-</pre>
-
-Kimenet:
-
-<pre>
-1
-3
-5
-7
-9
-</pre>
+Lehet jönni forkolni, javítani, bővíteni :)
