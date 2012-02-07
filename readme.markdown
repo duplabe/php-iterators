@@ -8,7 +8,7 @@ Az iterátorokkal kapcsolatos interface-ek és osztályok az SPL (Standard PHP L
 
 ## Iterator
 
-A PHP-s iterator-ok az [Iterator](http://hu.php.net/manual/en/class.iterator.php "Iterator") interface-en alapulnak, azt implementálják. Sok érdekesség nincs benne, a szokásos iterátorokkal kapcsolatos metódusokat szedi össze: current(), key(), next(), rewind(), valid().
+A PHP-s iterator-ok az [Iterator](http://php.net/manual/en/class.iterator.php "Iterator") interface-en alapulnak, azt implementálják. Sok érdekesség nincs benne, a szokásos iterátorokkal kapcsolatos metódusokat szedi össze: current(), key(), next(), rewind(), valid().
 
 ## EmptyIterator
 
@@ -18,7 +18,7 @@ A PHP-s iterator-ok az [Iterator](http://hu.php.net/manual/en/class.iterator.php
 
 ## ArrayIterator
 
-[ArrayIterator](http://hu.php.net/manual/en/class.arrayiterator.php)
+[ArrayIterator](http://php.net/manual/en/class.arrayiterator.php)
 
 Tömbökön és objektumokon iterálhatunk végig.
 
@@ -71,9 +71,9 @@ Iterate over an array
 
 ## DirectoryIterator
 
-[DirectoryIterator](http://hu.php.net/manual/en/class.directoryiterator.php)
+[DirectoryIterator](http://php.net/manual/en/class.directoryiterator.php)
 
-Egy könyvtár elemein mehetünk végig vele. Az elemek [SplFileInfo](http://hu.php.net/manual/en/class.splfileinfo.php) objektumok.
+Egy könyvtár elemein mehetünk végig vele. Az elemek [SplFileInfo](http://php.net/manual/en/class.splfileinfo.php) objektumok.
 
 Könyvtár szerkezet a iterátorok bemutatására:
 
@@ -140,7 +140,7 @@ A [glob()](http://php.net/manual/en/function.glob.php) függvényhez hasonló fu
 
 ## RecursiveDirectoryIterator
 
-[RecursiveDirectoryIterator](http://hu.php.net/manual/en/class.recursivedirectoryiterator.php)
+[RecursiveDirectoryIterator](http://php.net/manual/en/class.recursivedirectoryiterator.php)
 
 A DirectoryIterator-hoz hasonlóan itt is egy könyvtár elemein mehetünk végig, de rekurzívan.
 
@@ -173,7 +173,7 @@ Kimenet:
 
 ## ParentIterator
 
-[ParenntIterator](http://www.php.net/manual/en/class.parentiterator.php)
+[ParenntIterator](http://php.net/manual/en/class.parentiterator.php)
 
 Segítségével RecursiveIterator-okból lehet kiszűrni azon elemeket, amelyeknek nincs gyermekük. A RecursiveDirectoryIterator példához visszanyúlva, listázzuk ki csak a könyvtárakat:
 
@@ -204,7 +204,7 @@ Az üres könyvtárakat azért mutatja, mert ugye minden könyvtárban van egy h
 
 ## AppendIterator
 
-[AppendIterator](http://www.php.net/manual/en/class.appenditerator.php)
+[AppendIterator](http://php.net/manual/en/class.appenditerator.php)
 
 Több belső iteratort tárol, és azokon megy végig, egymás után.
 
@@ -270,7 +270,7 @@ getArrayIterator()
 
 ## MultipleIterator
 
-[MultipleIterator](http://www.php.net/manual/en/class.multipleiterator.php)
+[MultipleIterator](http://php.net/manual/en/class.multipleiterator.php)
 
 Az AppendIterator-hoz hasonlóan itt is több iterator-on mehetünk végig, de kicsit másképpen. Minden belső iterator-ból kivesz egy elemet, majd egy tömbben összegyűjtve adja vissza iterációnként.
 
@@ -376,25 +376,25 @@ Array
 
 ## IteratorIterator
 
-[IteratorIterator](http://www.php.net/manual/en/class.iteratoriterator.php)
+[IteratorIterator](http://php.net/manual/en/class.iteratoriterator.php)
 
 A [Traversable] interfészt implementáló objektumokból iterátort csinál.
 
 ## NoRewindIterator
 
-[NoRewindIterator](http://www.php.net/manual/en/class.norewinditerator.php)
+[NoRewindIterator](http://php.net/manual/en/class.norewinditerator.php)
 
 Iterator, amit nem lehet rewind-olni, azaz, ha egyszer végigmentünk az összes elemen, nem lehet újra kezdeni az iterálást.
 
 ## InfiniteIterator
 
-[InfiniteIterator](http://www.php.net/InfiniteIterator)
+[InfiniteIterator](http://php.net/InfiniteIterator)
 
 Olyan iterátor, amellyel a végtelenségig iterálhatunk az elemeken, nem kell a rewind-ot meghívnunk.
 
 ## LimitIterator
 
-[LimitIterator](http://www.php.net/manual/en/class.limititerator.php)
+[LimitIterator](http://php.net/manual/en/class.limititerator.php)
 
 Egy iterátor elemeinek részhalmazán mehetünk végig. A konstruktorában egy iterátoron kivül megadhatunk egy offset és egy count paramétert is.
 
@@ -421,7 +421,7 @@ Kimenet:
 
 ## FilterIterator
 
-[FilterIterator](http://www.php.net/manual/en/class.filteriterator.php)
+[FilterIterator](http://php.net/manual/en/class.filteriterator.php)
 
 A FilterIterator egy belső iterátor elemiből tud szűrni. A FilterIterator egy abstract osztály, amelyben egy darab abstract metódus van, az accept(). Az accept() visszatérési értéke boolean:
 
