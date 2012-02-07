@@ -380,6 +380,18 @@ Array
 
 A [Traversable] interfészt implementáló objektumokból iterátort csinál.
 
+## RecursiveIteratorIterator
+
+[RecursiveIteratorIterator](http://php.net/manual/en/class.recursiveiteratoriterator.php)
+
+A rekurzív iterátorokat "linearizálja", azaz nem kell a gyermekekkel foglalkozni (ellenőrizni, hogy van e, és ha igen, akkor azokon is végigmenni).
+
+Három módon használható:
+
+* RecursiveIteratorIterator::LEAVES\_ONLY: Csak a leveleken megy végig. Ez a default.
+* RecursiveIteratorIterator::SELF\_FIRST - Minden elemen végig megy, a szülőkkel kezd.
+* RecursiveIteratorIterator::CHILD\_FIRST: Minden elemen végig megy, a levelekkel kezd.
+
 ## NoRewindIterator
 
 [NoRewindIterator](http://php.net/manual/en/class.norewinditerator.php)
