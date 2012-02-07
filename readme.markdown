@@ -73,7 +73,7 @@ Iterate over an array
 
 [IteratorIterator](http://php.net/manual/en/class.iteratoriterator.php)
 
-A [Traversable] interfészt implementáló objektumokból iterátort csinál.
+A [Traversable](http://php.net/manual/en/class.traversable.php) interfészt implementáló objektumokból iterátort csinál.
 
 ## NoRewindIterator
 
@@ -94,6 +94,7 @@ Olyan iterátor, amellyel a végtelenségig iterálhatunk az elemeken, nem kell 
 Egy iterátor elemeinek részhalmazán mehetünk végig. A konstruktorában egy iterátoron kivül megadhatunk egy offset és egy count paramétert is.
 
 Példa:
+
 <pre>
 $limitIterator = new LimitIterator(
     new ArrayIterator(range(0, 10)),
@@ -133,7 +134,7 @@ class OddFilterIterator extends FilterIterator
     {
         $current = $this->current();
 
-        return is_integer($current) && $current % 2;
+        return is_integer($current) &amp;&amp; $current % 2;
     }
 
 }
