@@ -374,6 +374,12 @@ Array
 )
 </pre>
 
+## IteratorIterator
+
+[IteratorIterator](http://www.php.net/manual/en/class.iteratoriterator.php)
+
+A [Traversable] interfészt implementáló objektumokból iterátort csinál.
+
 ## NoRewindIterator
 
 [NoRewindIterator](http://www.php.net/manual/en/class.norewinditerator.php)
